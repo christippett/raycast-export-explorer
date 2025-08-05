@@ -1,0 +1,15 @@
+[project]
+name = "rayconfig"
+version = "0.1.0"
+description = "Parse exported Raycast configuration files"
+readme = "README.md"
+authors = [{ name = "Chris Tippett", email = "git@christippett.dev" }]
+requires-python = ">=3.13"
+dependencies = ["typer>=0.16.0"]
+
+[project.scripts]
+rayconfig = "rayconfig.main:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
