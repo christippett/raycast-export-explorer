@@ -12,3 +12,7 @@ wheels/
 # Data files
 db/
 data/
+
+# CRUSH agent files
+.crush/
+.crush

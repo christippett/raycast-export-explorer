@@ -41,17 +41,19 @@ Within the `./references` subdirectory are Markdown files with potentially usefu
 Investigation into the `.rayconfig` file format, specifically for exports protected by a password, has yielded the following:
 
 1.  **Encryption Algorithm:** The file is encrypted using **AES-256-CBC**.
-2.  **Key Derivation:** The encryption key is derived from the provided password using **PBKDF2** with **256,000 iterations**.
+2.  **Key Derivation:** The encryption key is derived from the provided password.
 3.  **Initialization Vector (IV) Handling:** The `openssl` decryption process, when successful, prepends a 16-byte header (likely the IV) to the output. This header needs to be removed before further processing.
 4.  **Compression:** After decryption and removal of the `openssl` header, the content is a **gzipped JSON** file.
 
 **Decryption Process for `.rayconfig` files:**
 
-To decrypt and decompress a `.rayconfig` file, the following steps are required:
+To decrypt and decompress a `.rayconfig` file, use:
 
-1.  **Decrypt with `openssl`:** Use `openssl enc -d -aes-256-cbc -nosalt` with the input file and password.
+1.  **Decrypt with `openssl`:** Use `openssl enc -d -aes-256-cbc -nosalt` with the file and password.
 2.  **Remove `openssl` header:** The output from `openssl` will have a 16-byte header that needs to be removed (e.g., using `tail -c +17`).
 3.  **Decompress with `gunzip`:** The remaining content is gzipped and can be decompressed using `gunzip` to reveal the JSON data.
+
+No PBKDF2 or iteration options are required (the openssl command above is correct).
 
 ### Notes
 
