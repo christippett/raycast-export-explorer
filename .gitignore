@@ -13,6 +13,8 @@ wheels/
 db/
 data/
 
-# CRUSH agent files
+# AI config
 .crush/
 .crush
+.claude/
+opencode.json
