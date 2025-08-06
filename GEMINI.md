@@ -49,6 +49,93 @@ Investigation into the `.rayconfig` file format, specifically for exports protec
 
 To decrypt and decompress a `.rayconfig` file, the following steps are required:
 
-1.  **Decrypt with `openssl`:** Use `openssl enc -d -aes-256-cbc -pbkdf2 -iter 256000` with the input file and password.
+1.  **Decrypt with `openssl`:** Use `openssl enc -d -aes-256-cbc -nosalt` with the input file and password.
 2.  **Remove `openssl` header:** The output from `openssl` will have a 16-byte header that needs to be removed (e.g., using `tail -c +17`).
 3.  **Decompress with `gunzip`:** The remaining content is gzipped and can be decompressed using `gunzip` to reveal the JSON data.
+
+### Notes
+
+The decrypted Raycast configuration file includes a copy of all the notes stored in Raycast. While the content of these notes are available as plain text, the original notes formatted as Markdown are not as readily accessible.
+
+Each note has "document" key that contains the parsed structure of the Markdown file. This can be used to re-create the original Markdown syntax.
+
+Example excerpt of a single note:
+```json
+{
+  "createdAt": "2023-08-28T10:57:32Z",
+  "openedAt": "2025-04-30T17:41:23Z",
+  "text": "🐷❗",
+  "modifiedAt": "2024-08-06T02:24:05Z",
+  "id": "1D5FCA06-C278-40CE-9E3C-B47D75AA3668",
+  "documentSchemaVersion": 2,
+  "document": "e30=",
+  "title": ""
+}
+```
+
+Output from `document` after base64 decryption:
+```json
+{
+  "type": "doc",
+  "content": [
+    {
+      "type": "heading",
+      "attrs": { "level": 1 },
+      "content": [
+        {
+          "type": "text",
+          "text": "Title Text"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "This is some text"
+        }
+      ]
+    },
+    {
+      "type": "codeBlock",
+      "attrs": { "language": null },
+      "content": [
+        {
+          "type": "text",
+          "text": "x = y"
+        }
+      ]
+    },
+    { "type": "paragraph" },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "This text is bold."
+        }
+      ]
+    },
+    { "type": "paragraph" },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "marks": [{ "type": "bold" }],
+          "text": "Bold text after a blank paragraph."
+        }
+      ]
+    }
+  ]
+}
+```
+
+# Working with Python
+
+`uv` is the tool of choice for working with Python.
+- Install dependencies with `uv add [dependency]`
+- Execute Python using `uv run python ...`
+- Tests can be run with `pytest` using `uv run pytest`
+- The `rayconfig` package itself can be run too with `uv run rayconfig`
