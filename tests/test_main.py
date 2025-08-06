@@ -469,7 +469,7 @@ def test_combined_elements():
         "This is a **bold** and *italic* paragraph with a [link](https://google.com).\n"
         "```javascript\nfunction test() {\n  return true;\n}\n```\n"
         "> A quoted statement.\n"
-        "---\n"
+        "\n---\n\n"
         "- [ ] Task item 1\n- [x] Task item 2 (checked)\n  - [ ] Nested task item\n"
         "- List item 1\n- List item 2\n  - Nested list item\n"
         "1. Ordered item 1\n2. Ordered item 2\n  - Nested ordered item\n"

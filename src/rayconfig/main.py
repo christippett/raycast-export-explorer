@@ -51,7 +51,7 @@ def ast_to_markdown(node, i=1):
     elif node_type == "doc":
         markdown += text_content
     elif node_type == "horizontalRule":
-        markdown += "---"
+        markdown += "\n---\n"
     elif node_type == "heading":
         level = node_attrs.get("level", 1)
         markdown += "#" * level + f" {text_content}"
