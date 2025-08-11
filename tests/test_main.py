@@ -444,7 +444,7 @@ def test_combined_elements():
                     {
                         "type": "list",
                         "attrs": {
-                            "kind": "bullet",
+                            "kind": "ordered",
                             "order": None,
                             "checked": False,
                         },
@@ -472,6 +472,6 @@ def test_combined_elements():
         "\n---\n\n"
         "- [ ] Task item 1\n- [x] Task item 2 (checked)\n  - [ ] Nested task item\n"
         "- List item 1\n- List item 2\n  - Nested list item\n"
-        "1. Ordered item 1\n2. Ordered item 2\n  - Nested ordered item\n"
+        "1. Ordered item 1\n2. Ordered item 2\n  1. Nested ordered item\n"
     )
     assert ast_to_markdown(ast) == expected_md
