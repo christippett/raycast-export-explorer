@@ -105,7 +105,8 @@
 <main>
     <div class="container">
         <header>
-            <h1>🎯 Raycast Config Decoder</h1>
+            <img height="48" width="48" src="/raycast.svg" />
+            <h1>Raycast Notes Exporter</h1>
             <p>
                 Decrypt and extract notes from your exported Raycast
                 configuration file
@@ -116,7 +117,7 @@
             <div class="file-input-wrapper">
                 <label for="file-input" class="file-label">
                     <span class="file-icon">📁</span>
-                    Choose .rayconfig file
+                    Load .rayconfig
                 </label>
                 <input
                     id="file-input"
@@ -131,12 +132,11 @@
             </div>
 
             <div class="password-input-wrapper">
-                <label for="passphrase">Passphrase:</label>
                 <input
                     id="passphrase"
                     type="password"
                     bind:value={passphrase}
-                    placeholder="Enter your decryption passphrase"
+                    placeholder="Password"
                     disabled={loading}
                     on:keypress={(e) => e.key === "Enter" && handleDecrypt()}
                 />
@@ -150,6 +150,7 @@
                 >
                     {loading ? "Decrypting..." : "Decrypt"}
                 </button>
+                <span class="glow"></span>
 
                 {#if config}
                     <button on:click={handleReset} class="reset-btn">
@@ -223,44 +224,96 @@
 </main>
 
 <style>
+    :root {
+        --text-white: white;
+        --text-muted: rgb(106, 107, 108);
+    }
     :global(body) {
         margin: 0;
         font-family:
-            -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            "Inter",
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            Roboto,
+            sans-serif;
+        background: rgb(7, 8, 10);
         min-height: 100vh;
     }
 
     .container {
-        max-width: 1200px;
+        max-width: 900px;
         margin: 0 auto;
         padding: 2rem;
-        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
     }
 
     header {
         text-align: center;
         margin-bottom: 3rem;
         color: white;
+        h1 {
+            font-size: 3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
     }
 
-    header h1 {
-        font-size: 2.5rem;
-        margin-bottom: 0.5rem;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    }
-
-    header p {
-        font-size: 1.1rem;
-        opacity: 0.9;
+    input[type="password"] {
+        position: relative;
+        width: 100%;
+        height: 42px;
+        padding: 12px 8px;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 500;
+        color: white;
+        letter-spacing: 0.2px;
+        background: hsla(0, 0%, 100%, 0.05);
+        border: 1px solid hsla(0, 0%, 100%, 0.05);
+        border-radius: 8px;
+        outline: none;
+        transition:
+            color 0.3s ease,
+            border 0.3s ease;
+        &:focus {
+            border-color: hsla(0, 0%, 100%, 0.4);
+        }
     }
 
     .upload-section {
-        background: white;
+        width: 400px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         border-radius: 12px;
         padding: 2rem;
         margin-bottom: 2rem;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        box-shadow: inset 0 1px 0 0 hsla(0, 0%, 100%, 0.1);
+        background-image: linear-gradient(
+            45deg,
+            rgb(12, 13, 15) 0px,
+            rgb(7, 8, 10) 100%
+        );
+        /*background: radial-gradient(
+            90.35% 49.25% at 50% 59.06%,
+            rgba(2, 61, 114, 0.7),
+            rgba(5, 11, 28, 0.42)
+        );
+        box-shadow:
+            0px 1px 0px 0px rgba(255, 255, 255, 0.1) inset,
+            0px 30px 50px 0px rgba(0, 0, 0, 0.4),
+            0px 4px 24px 0px rgba(3, 30, 129, 0.09),
+            0 0 0 1px rgba(255, 255, 255, 0.06) inset;*/
     }
 
     .file-input-wrapper {
@@ -285,14 +338,16 @@
         border-color: #adb5bd;
     }
 
-    #file-input {
+    input[type="file"] {
         display: none;
     }
 
     .file-name {
-        margin-left: 1rem;
-        color: #28a745;
-        font-weight: 500;
+        display: block;
+        margin-top: 0.5rem;
+        color: rgb(156, 156, 157);
+        font-size: 0.8rem;
+        font-family: "Red Hat Mono", monospace;
     }
 
     .password-input-wrapper {
@@ -306,59 +361,68 @@
         color: #495057;
     }
 
-    #passphrase {
-        width: 100%;
-        padding: 0.75rem;
-        border: 1px solid #ced4da;
-        border-radius: 6px;
-        font-size: 1rem;
-        transition: border-color 0.2s;
-    }
-
-    #passphrase:focus {
-        outline: none;
-        border-color: #667eea;
-        box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.25);
-    }
-
     .button-group {
         display: flex;
         gap: 1rem;
+        position: relative;
+        padding: 12px 8px;
     }
 
-    .decrypt-btn,
-    .reset-btn,
-    .download-all-btn {
-        padding: 0.75rem 1.5rem;
-        border: none;
-        border-radius: 6px;
-        font-weight: 500;
+    button,
+    .file-label {
+        z-index: 1;
+        flex: 1;
         cursor: pointer;
-        transition: all 0.2s;
+        border-radius: 8px;
+        border: none;
+        padding: 8px 12px;
+        font-weight: 500;
+        font-size: 14px;
+        color: rgb(47, 48, 49);
+        background: rgb(230, 230, 230);
+        box-shadow:
+            inset 0 -1px 0.4px 0 rgba(0, 0, 0, 0.2),
+            inset 0 1px 0.4px 0 #fff,
+            0 0 0 2px rgba(0, 0, 0, 0.1),
+            0 0 14px 0 hsla(0, 0%, 100%, 0.19);
+    }
+    button:hover + .glow {
+        opacity: 0.8;
+    }
+    .glow {
+        position: absolute;
+        right: 0;
+        left: 0;
+        z-index: 0;
+        width: 100%;
+        height: 75%;
+        background: conic-gradient(
+            from 136.95deg at 50% 50%,
+            #0294fe -55.68deg,
+            #ff2136 113.23deg,
+            #9b4dff 195deg,
+            #0294fe 304.32deg,
+            #ff2136 473.23deg
+        );
+        filter: blur(32px);
+        border-radius: 6px;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+        transform: translateZ(0);
+        will-change: opacity;
     }
 
-    .decrypt-btn {
-        background: #667eea;
+    button.reset-btn {
+        background: linear-gradient(
+            180deg,
+            hsla(0, 0%, 100%, 0.03),
+            hsla(0, 0%, 100%, 0.1)
+        );
         color: white;
-    }
-
-    .decrypt-btn:hover:not(:disabled) {
-        background: #5a67d8;
-    }
-
-    .decrypt-btn:disabled {
-        background: #e9ecef;
-        color: #6c757d;
-        cursor: not-allowed;
-    }
-
-    .reset-btn {
-        background: #6c757d;
-        color: white;
-    }
-
-    .reset-btn:hover {
-        background: #5a6268;
+        box-shadow:
+            inset 0 1px 0 0 hsla(0, 0%, 100%, 0.05),
+            0 0 0 1px hsla(0, 0%, 100%, 0.25),
+            inset 0 -1px 0 0 rgba(0, 0, 0, 0.2);
     }
 
     .download-all-btn {
