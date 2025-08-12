@@ -4,6 +4,8 @@ This document outlines the key commands, conventions, and context for working wi
 
 ## Commands
 
+### Python
+
 - **Install dependencies:** `uv add [package]`
 - **Run project:** `uv run rayconfig`
 - **Run a Python file:** `uv run python src/rayconfig/main.py`
@@ -11,7 +13,13 @@ This document outlines the key commands, conventions, and context for working wi
 - **Run a single test:** `uv run pytest tests/test_main.py -k "test_function_name"`
 - **Lint:** No specific linter is configured.
 
+### Typescript
+
+- **Install dependencies:** `pnpm add [package]`
+
 ## Code Style & Conventions
+
+### Python
 
 - **Formatting:** Follow PEP 8 guidelines with 4-space indentation.
 - **Imports:** Group imports: standard library, then third-party, then local. Sort alphabetically within each group.
@@ -22,18 +30,10 @@ This document outlines the key commands, conventions, and context for working wi
 - **Testing:** All new features must be accompanied by tests. The preferred workflow is to first write a brief spec, then stub out tests, and finally implement the feature.
 - **Security:** Do not log secrets. Sanitize user input used for filenames.
 
-## Technical Context
+## Project Objectives
 
-### Raycast `.rayconfig` Export Decryption
-1.  **Decrypt:** Use `openssl enc -d -aes-256-cbc -nosalt` with the file and password.
-2.  **Header:** Remove the first 16 bytes (the `openssl` header).
-3.  **Decompress:** The remaining content is a gzipped JSON file.
+The project aims to decrypt user's settings exported from the application Raycast. The file exported from Raycast has the extension `.rayconfig` and is a JSON file compressed using gzip and encrypted using a passphrase of the user's choosing.
 
-### Raycast SQLite Database
-- The databases are encrypted using **SQLCipher**.
-- The key is stored in the macOS Keychain with the identifier `database_key`.
-- A potential salt has been identified: `yvkwWXzxPPBAqY2tmaKrB*DvYjjMaeEf`.
-- See the `references/` directory for more details on GRDB and SQLCipher.
-
-## Repo Hygiene
-- Add `.crush/` and `.crush` to `.gitignore`.
+- `src/rayconfig/decrypt.py` contains the logic for decrypting and reading an exported Raycast configuration file.
+- `src/rayconfig/utils.py` contains logic for parsing the user's Markdown notes stored in the exported config. These notes are stored in an AST-like structure and parsing is required to render them as formatted Markdown.
+- `src/rayconfig/main.py` contains the main entrypoint to the program and implements a CLI using the `Typer` framework.
