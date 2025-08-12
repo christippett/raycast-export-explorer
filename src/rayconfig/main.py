@@ -29,6 +29,7 @@ def decrypt(
 
     output_file = input_file.with_suffix(".json")
     output_file.write_bytes(raycfg.raw)
+    typer.echo(raycfg.raw)
 
 
 @app.command()
