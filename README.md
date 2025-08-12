@@ -8,7 +8,7 @@ A browser-based TypeScript implementation for parsing and decrypting Raycast con
 - 📝 **Parse Raycast notes** from AST to Markdown
 - 🌐 **Browser-native** - no server required
 - 📱 **Responsive UI** built with Svelte
-- 💾 **Download notes** as individual Markdown files
+- 💾 **Download notes** as individual Markdown files or single ZIP archive
 - 🧪 **Comprehensive tests** with Vitest
 
 ## Quick Start
@@ -46,7 +46,7 @@ pnpm test
 1. **Upload your .rayconfig file** - Select the encrypted configuration file exported from Raycast
 2. **Enter your passphrase** - The same password you used when exporting from Raycast
 3. **Decrypt** - The app will decrypt and parse your configuration
-4. **Download notes** - Individual notes can be downloaded as Markdown files
+4. **Download notes** - Individual notes can be downloaded as Markdown files, or all notes as a single ZIP file
 
 ## Architecture
 
@@ -94,6 +94,7 @@ Raycast notes are stored as:
 
 ### Runtime
 - **pako** - Gzip compression/decompression
+- **jszip** - ZIP file creation for bulk downloads
 
 ### Development
 - **Svelte 5** - UI framework

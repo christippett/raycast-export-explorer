@@ -18,11 +18,13 @@
   ],
   "description": "Browser-based TypeScript implementation for parsing and decrypting Raycast configuration files",
   "dependencies": {
+    "jszip": "^3.10.1",
     "pako": "^2.1.0"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^6.1.1",
     "@tsconfig/svelte": "^5.0.4",
+    "@types/jszip": "^3.4.1",
     "@types/pako": "^2.0.3",
     "jsdom": "^26.1.0",
     "svelte": "^5.38.1",

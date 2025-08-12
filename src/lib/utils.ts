@@ -216,10 +216,42 @@ export function downloadAllNotes(notes: ParsedNote[]): void {
 }
 
 /**
- * Create a ZIP file containing all notes (requires additional dependency)
+ * Create a ZIP file containing all notes
  */
 export async function createNotesZip(notes: ParsedNote[]): Promise<Blob> {
-  // This would require a ZIP library like JSZip
-  // For now, we'll just download individual files
-  throw new Error("ZIP creation not implemented yet. Use downloadAllNotes() instead.");
+  const { default: JSZip } = await import('jszip');
+  const zip = new JSZip();
+
+  // Add each note to the ZIP file
+  notes.forEach(note => {
+    const filename = generateNoteFilename(note);
+    zip.file(filename, note.content, { date: note.modifiedAt });
+  });
+
+  // Generate the ZIP file
+  return await zip.generateAsync({ type: 'blob' });
+}
+
+/**
+ * Download all notes as a single ZIP file
+ */
+export async function downloadNotesZip(notes: ParsedNote[]): Promise<void> {
+  if (notes.length === 0) {
+    return;
+  }
+
+  try {
+    const zipBlob = await createNotesZip(notes);
+    const url = URL.createObjectURL(zipBlob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `raycast-notes-${new Date().toISOString().split('T')[0]}.zip`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Error creating ZIP file:', error);
+    throw new Error('Failed to create ZIP file');
+  }
 }

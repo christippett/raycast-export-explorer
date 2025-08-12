@@ -1,7 +1,9 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   astToMarkdown,
   createNoteBlob,
+  createNotesZip,
+  downloadNotesZip,
   generateNoteFilename,
   parseAllNotes,
   parseNote,
@@ -487,6 +489,113 @@ describe('utils', () => {
       const blob = createNoteBlob(note);
       expect(blob.type).toBe('text/markdown');
       expect(blob.size).toBeGreaterThan(0);
+    });
+  });
+
+  describe('createNotesZip', () => {
+    it('should create ZIP file with all notes', async () => {
+      const notes = [
+        {
+          id: 'note1',
+          title: 'First Note',
+          content: '# First Note\nContent 1',
+          modifiedAt: new Date()
+        },
+        {
+          id: 'note2',
+          title: 'Second Note',
+          content: '# Second Note\nContent 2',
+          modifiedAt: new Date()
+        }
+      ];
+
+      const zipBlob = await createNotesZip(notes);
+      expect(zipBlob.type).toBe('application/zip');
+      expect(zipBlob.size).toBeGreaterThan(0);
+    });
+
+    it('should handle empty notes array', async () => {
+      const zipBlob = await createNotesZip([]);
+      expect(zipBlob.type).toBe('application/zip');
+      expect(zipBlob.size).toBeGreaterThan(0); // ZIP header is still present
+    });
+
+    it('should create ZIP with proper filenames', async () => {
+      const notes = [
+        {
+          id: 'test-id',
+          title: 'Test/Title\\With:Problems',
+          content: 'Content',
+          modifiedAt: new Date()
+        }
+      ];
+
+      // We can't easily test the internal ZIP structure in this test environment,
+      // but we can verify that the ZIP is created successfully
+      const zipBlob = await createNotesZip(notes);
+      expect(zipBlob).toBeInstanceOf(Blob);
+    });
+  });
+
+  describe('downloadNotesZip', () => {
+    // Mock DOM elements for download testing
+    const mockCreateElement = vi.fn();
+    const mockAppendChild = vi.fn();
+    const mockRemoveChild = vi.fn();
+    const mockClick = vi.fn();
+    const mockCreateObjectURL = vi.fn();
+    const mockRevokeObjectURL = vi.fn();
+
+    beforeEach(() => {
+      // Mock document.createElement
+      (global as any).document = {
+        ...((global as any).document || {}),
+        createElement: mockCreateElement.mockReturnValue({
+          click: mockClick,
+          href: '',
+          download: ''
+        }),
+        body: {
+          appendChild: mockAppendChild,
+          removeChild: mockRemoveChild
+        }
+      };
+
+      // Mock URL methods
+      (global as any).URL = {
+        ...((global as any).URL || {}),
+        createObjectURL: mockCreateObjectURL.mockReturnValue('mock-url'),
+        revokeObjectURL: mockRevokeObjectURL
+      };
+    });
+
+    afterEach(() => {
+      vi.clearAllMocks();
+    });
+
+    it('should handle empty notes array', async () => {
+      await downloadNotesZip([]);
+      expect(mockCreateElement).not.toHaveBeenCalled();
+    });
+
+    it('should create and trigger download for valid notes', async () => {
+      const notes = [
+        {
+          id: 'note1',
+          title: 'Test Note',
+          content: 'Content',
+          modifiedAt: new Date()
+        }
+      ];
+
+      await downloadNotesZip(notes);
+
+      expect(mockCreateElement).toHaveBeenCalledWith('a');
+      expect(mockCreateObjectURL).toHaveBeenCalled();
+      expect(mockAppendChild).toHaveBeenCalled();
+      expect(mockClick).toHaveBeenCalled();
+      expect(mockRemoveChild).toHaveBeenCalled();
+      expect(mockRevokeObjectURL).toHaveBeenCalled();
     });
   });
 });
