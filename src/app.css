@@ -1,42 +1,21 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@import "https://fonts.bunny.net/css?family=red-hat-mono:400|inter:400,500,600,700";
+@import "tailwindcss";
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
-}
-
-* {
-  box-sizing: border-box;
+@theme {
+    --color-muted: rgb(106, 107, 108);
+    --color-code: rgb(156, 156, 157);
+    --font-mono: "Red Hat Mono", monospace;
+    --font-sans: "Inter", sans-serif;
 }
 
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+    background-color: rgb(7, 8, 10);
+    @apply p-8 m-0 text-white;
 }
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-  width: 100%;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
+button {
+    @apply flex align-middle gap-2 px-2.5 py-1.5;
+    @apply font-medium text-gray-900 dark:text-white;
+    @apply cursor-pointer rounded-md shadow-xs items-center justify-center inset-ring;
+    @apply bg-white inset-ring-gray-300 hover:bg-gray-50;
+    @apply dark:bg-white/10  dark:shadow-none dark:inset-ring-white/5 dark:hover:bg-white/20;
 }
