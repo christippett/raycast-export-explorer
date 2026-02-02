@@ -1,8 +1,10 @@
-<img src="public/raycast.webp" alt="Raycast Export Explorer Logo" width="150"/>
+<img src="public/raycast.webp" alt="Raycast Export Explorer Logo" width="250"/>
 
-# Raycast Export Explorer
+# Raycast Export Explorer[^1]
 
 A web front-end tool that allows users to upload and decrypt their exported Raycast settings (`.rayconfig` file). The data is decrypted and parsed 100% client-side by the browser and allows you to explore any [Raycast Notes](https://www.raycast.com/core-features/notes) included in the export. Notes can be downloaded individually as Markdown and/or bulk-downloaded as a zipped archive.
+
+[^1]: *I spent about as much time creating the logo in Blender as I did everything else 🤫*
 
 ## Summary
 
