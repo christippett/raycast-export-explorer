@@ -6,6 +6,11 @@
   "repository": "https://github.com/christippett/raycast-export-explorer",
   "author": "Chris Tippett",
   "type": "module",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@tailwindcss/oxide"
+    ]
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
