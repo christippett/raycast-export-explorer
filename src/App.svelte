@@ -118,7 +118,7 @@
             <Divider text="Raycast Notes" />
             <section class="flex flex-col">
                 <button
-                    on:click={handleNotesDownload}
+                    onclick={handleNotesDownload}
                     class="download mb-4 sm:self-end"
                     disabled={downloadingZip}
                 >

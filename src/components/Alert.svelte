@@ -1,5 +1,6 @@
 <script lang="ts">
     import { fade } from "svelte/transition";
+    import { onMount } from "svelte";
     export let message: string;
     export let error: boolean = false;
     export let warning: boolean = false;
@@ -11,6 +12,14 @@
     function dismiss() {
         visible = false;
     }
+
+    onMount(() => {
+        const timeout = setTimeout(() => {
+            visible = false;
+        }, 5000);
+
+        return () => clearTimeout(timeout);
+    });
 </script>
 
 {#if visible}
@@ -44,28 +53,6 @@
                 <p class="text-sm font-medium">
                     {message}
                 </p>
-            </div>
-            <div class="ml-auto pl-3">
-                <div class="-mx-1.5 -my-1.5">
-                    <button
-                        type="button"
-                        on:click={dismiss}
-                        class="ml-2 cursor-pointer inline-flex rounded-md bg-green-50 p-1.5 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-green-50 focus-visible:outline-hidden dark:bg-transparent dark:focus-visible:ring-offset-1"
-                    >
-                        <span class="sr-only">Dismiss</span>
-                        <svg
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            data-slot="icon"
-                            aria-hidden="true"
-                            class="size-5"
-                        >
-                            <path
-                                d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z"
-                            />
-                        </svg>
-                    </button>
-                </div>
             </div>
         </div>
     </div>
