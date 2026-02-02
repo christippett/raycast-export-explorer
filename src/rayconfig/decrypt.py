@@ -46,6 +46,8 @@ class RaycastConfig:
         return json.loads(self.raw, **kwargs)
 
     def notes(self):
+        if not self.raw:
+            return None
         config = self.json()
         if notes := config.get("builtin_package_raycastNotes"):
             return notes.get("notes", [])

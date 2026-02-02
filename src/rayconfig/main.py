@@ -25,7 +25,11 @@ def decrypt(
     Decrypts a Raycast configuration file.
     """
     raycfg = RaycastConfig()
-    raycfg.import_file(password, input_file)
+    try:
+        raycfg.import_file(password, input_file)
+    except ValueError as exc:
+        typer.echo(exc)
+        raise typer.Exit(1)
 
     output_file = input_file.with_suffix(".json")
     output_file.write_bytes(raycfg.raw)
@@ -48,11 +52,15 @@ def parse_notes(
     output_dir.mkdir(parents=True, exist_ok=True)
 
     raycfg = RaycastConfig()
-    raycfg.import_file(password, config_file)
+    try:
+        raycfg.import_file(password, config_file)
+    except ValueError as exc:
+        typer.echo(exc)
+        raise typer.Exit(1)
 
     if not (notes_data := raycfg.notes()):
         typer.echo("No notes found in the config file.")
-        raise typer.Exit()
+        raise typer.Exit(1)
 
     typer.echo(f"Found {len(notes_data)} notes.")
 

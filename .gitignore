@@ -12,6 +12,7 @@ wheels/
 # Data files
 db/
 data/
+*.txt
 
 # AI config
 .crush/
