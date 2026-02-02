@@ -7,11 +7,6 @@
         return date.toLocaleDateString() + " " + date.toLocaleTimeString();
     }
 
-    function truncateContent(content: string, maxLength: number = 200): string {
-        if (content.length <= maxLength) return content;
-        return content.substring(0, maxLength) + "...";
-    }
-
     function deepLink(id: string) {
         const context = encodeURIComponent(JSON.stringify({ id: id }));
         return `raycast://extensions/raycast/raycast-notes/raycast-notes?context=${context}`;

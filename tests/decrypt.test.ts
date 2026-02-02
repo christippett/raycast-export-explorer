@@ -59,6 +59,9 @@ describe('RaycastConfig', () => {
       config.setRawData(rawData);
 
       const notes = config.notes();
+      expect(notes).not.toBeNull();
+      if (!notes) return;
+
       expect(notes).toHaveLength(2);
       expect(notes[0].id).toBe('1');
       expect(notes[1].title).toBe('Test Note 2');

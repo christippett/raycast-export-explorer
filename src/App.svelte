@@ -2,7 +2,6 @@
     import { RaycastConfig } from "./lib/decrypt";
     import {
         parseAllNotes,
-        downloadNote,
         downloadNotesZip,
         type ParsedNote,
     } from "./lib/utils";
