@@ -1,31 +1,48 @@
-# Raycast Config Decoder (TypeScript)
+<img src="public/raycast.webp" alt="Raycast Export Explorer Logo" width="150"/>
 
-A browser-based TypeScript implementation for parsing and decrypting Raycast configuration files. This project mirrors the functionality of the Python implementation but runs entirely in the browser using modern Web APIs.
+# Raycast Export Explorer
+
+A web front-end tool that allows users to upload and decrypt their exported Raycast settings (`.rayconfig` file). The data is decrypted and parsed 100% client-side by the browser and allows you to explore any [Raycast Notes](https://www.raycast.com/core-features/notes) included in the export. Notes can be downloaded individually as Markdown and/or bulk-downloaded as a zipped archive.
+
+## Summary
+
+- **100% Client-Side**: Decryption and processing happen entirely in your browser. Your data never leaves your device and is not sent to any external server.
+- **Raycast Notes Export**: Specifically designed to extract and convert the internal Raycast notes database into standard Markdown files.
+- **Secure**: Uses the Web Crypto API for secure, local AES-256-CBC decryption.
 
 ## Features
 
-- 🔐 **Decrypt .rayconfig files** using Web Crypto API
-- 📝 **Parse Raycast notes** from AST to Markdown
-- 🌐 **Browser-native** - no server required
-- 📱 **Responsive UI** built with Svelte
-- 💾 **Download notes** as individual Markdown files or single ZIP archive
-- 🧪 **Comprehensive tests** with Vitest
+- 🔐 **Decrypt .rayconfig files**: Unlock your exported settings using your Raycast export password.
+- 💾 **Export to zip**: Download all your notes at once as a zipped archive of Markdown files.
+- 📝 ~~**Preview Notes**: View your notes directly in the browser with proper formatting~~ **_#TODO_**.
+- 📱 **Responsive UI**: Clean, modern interface built with Svelte and Tailwind CSS.
 
 ## Quick Start
 
-### Development
+### Prerequisites
 
-1. Install dependencies:
+- Node.js (Latest LTS recommended)
+- pnpm
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd raycast-db
+   ```
+
+2. Install dependencies:
    ```bash
    pnpm install
    ```
 
-2. Start development server:
+3. Start the development server:
    ```bash
    pnpm dev
    ```
 
-3. Open your browser to `http://localhost:5173`
+4. Open your browser to `http://localhost:5173`
 
 ### Building for Production
 
@@ -43,84 +60,34 @@ pnpm test
 
 ## Usage
 
-1. **Upload your .rayconfig file** - Select the encrypted configuration file exported from Raycast
-2. **Enter your passphrase** - The same password you used when exporting from Raycast
-3. **Decrypt** - The app will decrypt and parse your configuration
-4. **Download notes** - Individual notes can be downloaded as Markdown files, or all notes as a single ZIP file
-
-## Architecture
-
-### Core Modules
-
-- **`src/lib/decrypt.ts`** - Handles AES-256-CBC decryption and gzip decompression
-- **`src/lib/utils.ts`** - Converts Raycast note AST to Markdown format
-- **`src/App.svelte`** - Main UI component with file upload and note display
-
-### Browser Compatibility
-
-This project uses modern Web APIs:
-- **Web Crypto API** for AES encryption/decryption
-- **File API** for handling file uploads
-- **TextEncoder/TextDecoder** for string/binary conversion
-
-Supported browsers:
-- Chrome 37+
-- Firefox 34+
-- Safari 11+
-- Edge 79+
+1. **Export from Raycast**: From the launcher, type "export" and select "Export Settings & Data".
+2. **Upload**: Open Raycast Export Explorer and select your `.rayconfig` file.
+3. **Decrypt**: Enter the password you chose during export.
+4. **Explorer**: Browse your notes and download them individually or as a ZIP package.
 
 ## Technical Details
 
-### Encryption
+### Architecture
 
-The decryption process matches the Python implementation:
+- **`src/lib/decrypt.ts`**: Handles the AES-256-CBC decryption and key derivation (PBKDF2-like double hashing).
+- **`src/lib/utils.ts`**: Converts the Raycast AST (Abstract Syntax Tree) format into standard Markdown.
+- **`src/App.svelte`**: The main application logic and UI.
 
-1. **Key Derivation**: Double SHA-256 hashing of passphrase
-   - Key: First 32 bytes of SHA-256(passphrase)
-   - IV: First 16 bytes of SHA-256(key + passphrase)
+### Encryption Spec
 
-2. **Decryption**: AES-256-CBC with PKCS7 padding removal
+The tool implements the specific encryption scheme used by Raycast. Thanks to [this Gist](https://gist.github.com/jeremy-code/50117d5b4f29e04fcbbb1f55e301b893) for the original analysis:
+1. **Key Derivation**: 
+   - `Hash1 = SHA256(Passphrase)`
+   - `Hash2 = SHA256(Hash1 + Passphrase)`
+   - `Key` = First 32 bytes of `Hash1`
+   - `IV` = First 16 bytes of `Hash2`
+2. **Decryption**: AES-256-CBC.
+3. **Decompression**: The decrypted stream is a Gzipped JSON payload.
 
-3. **Decompression**: Gzip decompression using Pako library
+### Alternative
 
-### Note Parsing
+My original shell script MVP `decrypt_rayconfig.sh` is included that allows for decrypting a `*.rayconfig` file to its JSON representation using `openssl` and `gunzip`.
 
-Raycast notes are stored as:
-- Base64-encoded JSON AST documents
-- Converted to Markdown using recursive tree traversal
-- Support for all Raycast formatting (bold, italic, code, lists, etc.)
-
-## Dependencies
-
-### Runtime
-- **pako** - Gzip compression/decompression
-- **jszip** - ZIP file creation for bulk downloads
-
-### Development
-- **Svelte 5** - UI framework
-- **Vite** - Build tool and dev server
-- **TypeScript** - Type safety
-- **Vitest** - Testing framework
-
-## Security
-
-- All decryption happens locally in your browser
-- No data is sent to external servers
-- Passphrase is never logged or stored
-- Files are processed in memory only
-
-## License
-
-This project follows the same license as the parent Python project.
-
-## Contributing
-
-1. Follow the code style defined in the parent project's `AGENTS.md`
-2. Write tests for new features
-3. Ensure TypeScript types are properly defined
-4. Test in multiple browsers if adding new Web API usage
-
-## Related
-
-- **Python implementation**: `../src/rayconfig/` - Server-side CLI tool
-- **Documentation**: `../AGENTS.md` - Project conventions and commands
+```bash
+./decrypt_rayconfig.sh <path-to-rayconfig> <password>
+```
