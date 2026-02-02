@@ -87,7 +87,7 @@
 <main>
     <div class="flex gap-8 items-center flex-col max-w-3xl my-0 mx-auto">
         <header class="flex flex-col items-center">
-            <img height="192" width="192" src="/raycast.webp" alt="Icon" />
+            <img height="192" width="192" src="raycast.webp" alt="Icon" />
             <h1 class="text-3xl font-bold my-4">Raycast Export Explorer</h1>
             <p class="text-muted text-center">
                 Decrypt your exported Raycast configuration.
