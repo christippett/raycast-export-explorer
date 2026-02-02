@@ -89,10 +89,10 @@
             <img height="192" width="192" src="raycast.webp" alt="Icon" />
             <h1 class="text-3xl font-bold my-4">Raycast Export Explorer</h1>
             <p class="text-muted text-center">
-                Decrypt your exported Raycast configuration.
+                Decrypts and parses your exported Raycast configuration file.
             </p>
             <p class="text-muted text-center">
-                Files are processed 100% locally, nothing leaves your browser.
+                View and download your Raycast Notes as Markdown.
             </p>
         </header>
 
