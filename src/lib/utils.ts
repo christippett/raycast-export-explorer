@@ -13,7 +13,6 @@ interface Mark {
 
 /**
  * Convert Raycast note AST to Markdown string
- * Mirrors the Python ast_to_markdown function
  */
 export function astToMarkdown(node: ASTNode, index: number = 1): string {
   let markdown = "";
@@ -46,7 +45,7 @@ export function astToMarkdown(node: ASTNode, index: number = 1): string {
     let text = node.text || "";
     const marks = node.marks || [];
 
-    // Process marks in reverse order (like Python implementation)
+    // Process marks in reverse order
     for (let i = marks.length - 1; i >= 0; i--) {
       const mark = marks[i];
 

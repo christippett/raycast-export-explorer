@@ -7,7 +7,6 @@ export class RaycastConfig {
 
   /**
    * Generate AES key and IV from passphrase using SHA-256
-   * Mirrors the Python implementation using double hashing
    */
   private async getKey(passphrase: string): Promise<{ key: Uint8Array; iv: Uint8Array }> {
     const encoder = new TextEncoder();
